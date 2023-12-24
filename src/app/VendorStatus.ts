@@ -1,5 +1,5 @@
 export enum VendorStatus {
+    error = 'error',
     reconciled = 'reconciled',
-    remediated = 'remediated',
-    error = 'error'
+    remediated = 'remediated'
 }

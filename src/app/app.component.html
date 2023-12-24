@@ -1,10 +1,8 @@
 <p>dashbaord1 works!</p>
 
 <div class="left list-container">
-  <dx-list class="list" [dataSource]="productNames" [searchEnabled]="true"
-  selectionMode="single"
-  (onSelectionChanged) ="onClick($event)" >
-
+  <dx-list class="list" [dataSource]="productNames" [searchEnabled]="true" selectionMode="single"
+    (onSelectionChanged)="onClick($event)">
     <div *dxTemplate="let product of 'item'">
       <div>
         <div class="product">
@@ -16,10 +14,9 @@
 
   <div class="left list-container" style=" margin-top: 43px;  
   margin-left: -19px;">
-    <dx-list class="list" [dataSource]="products" displayExpr="vendorName" [searchEnabled]="true" selectionMode="single"
-    >
-
-      <div *dxTemplate="let s of 'item'" >
+    <dx-list class="list" [dataSource]="products" displayExpr="vendorName" [searchEnabled]="true"
+      selectionMode="single">
+      <div *dxTemplate="let s of 'item'">
         <div>
           <div class="product">
             <div class="name">{{ s.vendorName }}</div>
@@ -36,48 +33,34 @@
       <h5 class="card-title">Card title</h5>
       <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
         content.</p>
-
     </div>
   </div> -->
 
   <!-- <dx-tile-view class="dx-tile-content">
         <dxi-item
-          *ngFor="let p of cardDetails"
-          >
+          *ngFor="let p of cardDetails">
           <div
             class="name">
-         
             <div class="card" style="width: 30rem; background: rgba(191, 191, 191, 0.15);">
               <div class="card-body">
                 <h5 class="card-title">Card title</h5>
                 <p class="card-text">{{p.instanceName}}</p>
-         
               </div>
             </div>
-
           </div>
         </dxi-item>
       </dx-tile-view> -->
 
-
-      <table style="width:100%">
-        <tr>
-          <th *ngFor="let item of statusTypes">{{item}}</th>
-        </tr>
-        <tr *ngFor="let item1 of statusesByProductType[0].statuses">
-          <td>{{item1[0]?.total}}</td>
-          <td>{{item1[1]?.total}}</td>
-          <td>{{item1[2]?.total}}</td>
-        </tr>
-        <!-- <tr>
-          <td>Eve</td>
-          <td>Jackson</td>
-          <td>94</td>
-        </tr>
-        <tr>
-          <td>John</td>
-          <td>Doe</td>
-          <td>80</td>
-        </tr> -->
-      </table>
+  <table *ngIf="statusesByProductType && statusesByProductType.length > 0" style="width:100%">
+    <tr>
+      <th>Product Type</th>
+      <th *ngFor="let item of statusesByProductType[0].statuses">{{item.name | status}}</th>
+    </tr>
+    <tr *ngFor="let item of statusesByProductType; index as i">
+      <td>{{item.producType}}</td>
+      <td>{{item | statuscount : 1}}</td>
+      <td>{{item | statuscount : 2}}</td>
+      <td>{{item | statuscount : 3}}</td>
+    </tr>
+  </table>
 </div>
