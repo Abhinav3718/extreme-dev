@@ -6,12 +6,14 @@ export class ProductDetails {
     instanceName: string | undefined;
 }
 
+//Product ID data not getting populated. It needs to be checked.
 export class vendorStats {
     productType: string | undefined;
     productId: number | undefined;
     vendorName: string | undefined;
     instanceName: string | undefined;
     status: string | undefined;
+    msgdate: string | undefined;
 }
 
 export class Product {
@@ -19,6 +21,12 @@ export class Product {
     productId: number | undefined;
 }
 
-export class Result {
-    body?: Product[];
+export class Vendor {
+    vendorId: number | undefined;
+    vendorName: string | undefined;
+}
+
+export class Result<T> {
+    body?: string;
+    statusCode?: number;
 }

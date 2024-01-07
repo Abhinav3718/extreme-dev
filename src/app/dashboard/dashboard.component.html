@@ -1,0 +1,34 @@
+<div class="left list-container">
+  <dx-list class="list" [dataSource]="productNames" [searchEnabled]="true" selectionMode="single"
+  [keyExpr]="'productId'"
+    [selectedItemKeys]="[selectedProduct.productId]"
+    (onSelectionChanged)="onSelectProductTypeClick($event)">
+    <div *dxTemplate="let product of 'item'">
+      <div>
+        <div class="product">
+          <div class="name">{{ product.productType }}</div>
+        </div>
+      </div>
+    </div>
+  </dx-list>
+</div>
+
+<div class="dx-fieldset">
+  <div class="dx-field">
+    <div class="dx-field-label">Vendor</div>
+    <div class="dx-field-value">
+      <dx-select-box [dataSource]="dropdownDataSource" (onValueChanged)="onVendorChanged($event)"
+        [(selectedItem)]="selectedVendor" displayExpr="vendorName" valueExpr="vendorId">
+      </dx-select-box>
+    </div>
+  </div>
+
+  <div class="dx-field">
+    <div class="dx-field-label">Date</div>
+    <div class="dx-field-value">
+      <dx-date-box [(value)]="logDate" type="date" pickerType="calendar" [disabledDates]="disabledDates">
+      </dx-date-box>
+
+    </div>
+  </div>
+</div>

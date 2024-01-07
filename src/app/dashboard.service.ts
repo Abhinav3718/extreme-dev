@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
 import { Observable, of } from "rxjs";
-import { ProductDetails, vendorStats } from "./Models";
 import { Products } from "./Products";
 import { Statistics } from "./Statistics";
 import { VendorStatus } from "./VendorStatus";
@@ -10,12 +9,12 @@ import { VendorStatus } from "./VendorStatus";
 })
 export class dashboardService {
     private statusTypes: string[] = [];
-    getProductDetails(): Observable<ProductDetails[]> {
-        return of(<ProductDetails[]>JSON.parse(Products.body));
+    getProductDetails(): Observable<any> {
+        return of(Products);
     }
 
-    getvendorStatsDetails(): Observable<vendorStats[]> {
-        return of(<vendorStats[]>JSON.parse(Statistics.body));
+    getvendorStatsDetails(logDate: Date): Observable<any> {
+        return of(Statistics);
     }
 
     getStatusTypes(): string[] {
