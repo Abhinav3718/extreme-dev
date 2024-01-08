@@ -1,9 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { Product, ProductDetails, Vendor, vendorStats } from '../Models';
+import { Product, ProductDetails, Vendor, VendorPieDataModel, vendorStats } from '../Models';
 import { dashboardService } from '../dashboard.service';
 import { map } from 'rxjs';
-import DataSource from 'devextreme/data/data_source';
-import ArrayStore from 'devextreme/data/array_store';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,27 +16,28 @@ export class DashboardComponent implements OnInit {
   cardDetails: vendorStats[] = [];
   productNames: Product[] = [];
   vendorGroupedData: any[] = [];
-  statusesByProductType?: { producType: any, statuses: any[] }[];
+  statusesByProductType?: VendorPieDataModel[];
   statusTypes: string[] = [];
 
   logDate!: Date | string | number;
 
   treeBoxValue: any;
-  dropdownDataSource: Vendor[] = [];
+  vendorDropdownDataSource: vendorStats[] = [];
 
   selectedVendor?: vendorStats;
   selectedProduct: Product;
 
-  // minDate?: Date;
-  // maxDate?: Date;
-
   constructor(private service: dashboardService) {
-    this.selectedProduct = {productId: 1, productType: 'Marketing Automation'};
+    this.selectedProduct = { productId: 1, productType: 'Marketing Automation' };
     this.setLogDateToYesterday();
     this.setupStatusTypes();
     this.getProdHirerachy();
     this.getvendorstats();
   }
+
+  customizeTooltip = (arg: any) => ({
+    text: arg.value != 0 ? `${arg.argument} (${arg.value})` : ''
+  });
 
   ngOnInit(): void {
 
@@ -48,56 +47,59 @@ export class DashboardComponent implements OnInit {
     this.statusTypes = this.service.getStatusTypes();
   }
 
-  // dataSource!: DataSource;
-
-
-
   getProdHirerachy() {
     this.service.getProductDetails()
       .pipe(map((response: any) => response && response.statusCode && response.statusCode === 200 && response.body ? this.parseJson<ProductDetails>(response.body) : []))
       .subscribe((productDetails: ProductDetails[]) => {
-        
+        this.products = productDetails;
+        console.log(productDetails)
+
         let arr: any[] = productDetails.map(r => {
-          return {productId: r.productId, productType: r.productType};
+          return { productId: r.productId, productType: r.productType };
         });
 
         this.productNames = this.getUniqueByKey<Product>(arr, 'productId');
 
-        let arr2: any[] = productDetails.filter((product: ProductDetails) => product.productId === this.selectedProduct.productId)
-                                    .map((prod: ProductDetails) => {
-                                                return {vendorId: prod.instanceId, vendorName: prod.vendorName};
-                                              });
-
-        this.dropdownDataSource = this.getUniqueByKey<Vendor>(arr2, 'vendorId');
+        this.setVendorDropdown();
+        this.selectedVendor = Object.assign({}, this.vendorDropdownDataSource[0]);
       });
 
   }
 
+  private setVendorDropdown() {
+    let arr2: any[] = this.products.filter((product: ProductDetails) => product.productId === this.selectedProduct.productId)
+          .map((prod: ProductDetails) => {
+            return { vendorId: prod.instanceId, vendorName: prod.vendorName?.split(' - ')[1], instanceName: prod.vendorName };
+          });
+
+          this.vendorDropdownDataSource = [];
+
+        this.vendorDropdownDataSource = this.getUniqueByKey<vendorStats>(arr2, 'vendorId');
+        console.log(this.vendorDropdownDataSource);
+        
+
+        // this.selectedVendor = this.vendorDropdownDataSource[0];
+
+  }
+
   getvendorstats() {
-    this.service.getvendorStatsDetails(this.logDate as Date)
+    this.service.getvendorStatsDetails(this.selectedProduct.productId, this.logDate as Date)
       .pipe(map((response: any) => response && response.statusCode && response.statusCode === 200 && response.body ? this.parseJson<vendorStats>(response.body) : []))
       .subscribe((res: vendorStats[]) => {
         this.vendorStats = res;
-        // this.cardDetails = res;
-        // console.log('vendorstats', this.vendorStats);
+        console.log('vendorstats', this.vendorStats);
 
-        this.buildTableData();
+        this.selectedVendor = Object.assign({}, this.vendorDropdownDataSource[0]);
 
-        if(this.productNames && this.productNames.length > 0) {
-          this.productNames.forEach((product: Product) => {
-            let specificProductTypeData = this.vendorStats.filter((vendor: vendorStats) => vendor.productType === product.productType)
-          })
-        }
-
-        
-
+        this.buildPieChartData();
       })
 
   }
 
   onSelectProductTypeClick(e: any) {
     this.selectedProduct = e.addedItems[0];
-    this.buildTableData(this.selectedProduct);
+    this.setVendorDropdown();
+    this.buildPieChartData();
   }
 
   private getUniqueByKey<T>(arr: any, key: string): T[] {
@@ -105,7 +107,7 @@ export class DashboardComponent implements OnInit {
   }
 
   private setLogDateToYesterday() {
-    
+
     let now = new Date();
     this.logDate = now;
     this.logDate.setDate(this.logDate.getDate() - 1);
@@ -116,7 +118,7 @@ export class DashboardComponent implements OnInit {
 
     return e.date > now;
 
-    
+
     // this.maxDate = new Date();
     // this.minDate = new Date(now.setDate(now.getDate() - 8));
     // if(e.date < this.maxDate! && e.date > this.minDate!)
@@ -138,50 +140,56 @@ export class DashboardComponent implements OnInit {
   private setCardDetails() {
     // this condition needs to be changed based on productId, once this value is populated from API in VendorStats
     this.cardDetails = this.vendorStats.filter(r => r.productType === this.selectedProduct.productType);
+
+    if(this.selectedVendor && this.selectedVendor.vendorName) {
+      this.cardDetails = this.cardDetails.filter(r => r.vendorName === this.selectedVendor?.vendorName);
+    }
   }
 
 
-  private buildTableData(selectedProduct?: Product) {
-
+  private buildPieChartData() {
+    
     this.setCardDetails();
 
-    let statusesByProductType = [];
-    this.vendorGroupedData = this.groupBy(this.cardDetails, 'productType');
+    let statusesByProductType: VendorPieDataModel[] = [{}];
+    this.vendorGroupedData = this.groupBy(this.cardDetails, 'msgdate');
 
     let keys = Object.keys(this.vendorGroupedData).sort();
+    let obj: VendorPieDataModel[] = [];
 
-    if (selectedProduct && this.cardDetails.length === 0) {
-      let obj = { producType: selectedProduct?.productType, statuses: [{}] };
-      let statuses = [{}];
-      for (let status of this.statusTypes) {
-        statuses.push({
-          name: status,
-          total: 0
-        })
-      }
-      statuses.shift();
-      obj.statuses = statuses;
-      statusesByProductType.push(obj);
-    } else {
-      keys.forEach((key: any) => {
-        let obj = { producType: key, statuses: [{}] };
-        let currentIterationVendorData = this.vendorGroupedData[key];
+    if(keys && keys.length > 0) {
+      keys.forEach((msgDate: any) => {
+        let current = this.vendorGroupedData[msgDate];
 
-        for (let status of this.statusTypes) {
-          obj.statuses.push({
+        let statuses: any = [];
+        this.statusTypes.forEach((status: string) => {
+          statuses.push({
             name: status,
-            total: this.getStatusCount(currentIterationVendorData, status)
+            total: this.getStatusCount(current, status)
           })
-        }
+        });
 
-        obj.statuses.shift();
-        statusesByProductType.push(obj);
+        obj.push({
+          msgDate: msgDate,
+          statuses: statuses
+        })
+        
+        statusesByProductType = obj;
+
       })
     }
 
-    this.statusesByProductType = statusesByProductType; // Object.assign({}, statusesByProductType);
+    this.statusesByProductType = statusesByProductType;
 
     console.log(this.statusesByProductType)
+
+  }
+
+  pointClickHandler(e: any) {
+
+  }
+
+  legendClickHandler(e: any) {
 
   }
 
@@ -194,7 +202,8 @@ export class DashboardComponent implements OnInit {
   }
 
   onVendorChanged(e: any) {
-    console.log(this.selectedVendor);
+    //console.log(this.selectedVendor);
+    this.buildPieChartData();
   }
 
 }

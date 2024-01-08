@@ -8,6 +8,7 @@ export class ProductDetails {
 
 //Product ID data not getting populated. It needs to be checked.
 export class vendorStats {
+    vendorId: number | undefined;
     productType: string | undefined;
     productId: number | undefined;
     vendorName: string | undefined;
@@ -29,4 +30,9 @@ export class Vendor {
 export class Result<T> {
     body?: string;
     statusCode?: number;
+}
+
+export class VendorPieDataModel {
+    msgDate?: string;
+    statuses?: [];
 }

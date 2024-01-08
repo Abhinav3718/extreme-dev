@@ -13,12 +13,13 @@
   </dx-list>
 </div>
 
+
 <div class="dx-fieldset">
   <div class="dx-field">
     <div class="dx-field-label">Vendor</div>
     <div class="dx-field-value">
-      <dx-select-box [dataSource]="dropdownDataSource" (onValueChanged)="onVendorChanged($event)"
-        [(selectedItem)]="selectedVendor" displayExpr="vendorName" valueExpr="vendorId">
+      <dx-select-box [dataSource]="vendorDropdownDataSource" [value]="selectedVendor?.vendorName" (onValueChanged)="onVendorChanged($event)"
+        [(selectedItem)]="selectedVendor" displayExpr="instanceName" valueExpr="vendorName">
       </dx-select-box>
     </div>
   </div>
@@ -31,4 +32,33 @@
 
     </div>
   </div>
+</div>
+
+<div *ngFor="let statusData of statusesByProductType">
+  <dx-pie-chart
+  id="pie"
+  *ngIf="statusData && statusData.statuses"
+  type="doughnut"
+  title="Status counts"
+  palette="Soft Pastel"
+  [dataSource]="statusData.statuses"
+  (onPointClick)="pointClickHandler($event)"
+>
+  <dxi-series argumentField="name" valueField="total">
+    <dxo-label [visible]="true" >
+      <dxo-connector [visible]="true"></dxo-connector>
+    </dxo-label>
+  </dxi-series>
+  <dxo-export [enabled]="true"></dxo-export>
+  <dxo-legend
+    [margin]="0"
+    horizontalAlignment="right"
+    verticalAlignment="top"
+  ></dxo-legend>
+  <dxo-tooltip
+    [enabled]="true"
+    [customizeTooltip]="customizeTooltip"
+  >
+  </dxo-tooltip>
+</dx-pie-chart>
 </div>

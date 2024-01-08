@@ -13,7 +13,7 @@ export class dashboardService {
         return of(Products);
     }
 
-    getvendorStatsDetails(logDate: Date): Observable<any> {
+    getvendorStatsDetails(productId?: number, logDate?: Date): Observable<any> {
         return of(Statistics);
     }
 
