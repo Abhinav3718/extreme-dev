@@ -1,15 +1,15 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { Product, ProductDetails, Vendor, VendorPieDataModel, VendorStats } from '../Models';
+import { Component } from '@angular/core';
+import { Product, ProductDetails, VendorPieDataModel, VendorStats } from '../Models';
 import { dashboardService } from '../dashboard.service';
 import { map } from 'rxjs';
+import { PieDataSourceModel } from '../PieDataSourceModel';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css'],
-  changeDetection: ChangeDetectionStrategy.Default
+  selector: 'app-dashboard2',
+  templateUrl: './dashboard2.component.html',
+  styleUrls: ['./dashboard2.component.css']
 })
-export class DashboardComponent implements OnInit {
+export class Dashboard2Component {
   products: ProductDetails[] = [];
   VendorStats: VendorStats[] = [];
   formattedData: any;
@@ -26,6 +26,8 @@ export class DashboardComponent implements OnInit {
 
   selectedVendor?: VendorStats;
   selectedProduct: Product;
+
+  pieDataSource: PieDataSourceModel[] = [];
 
   constructor(private service: dashboardService) {
     this.selectedProduct = { productId: 1, productType: 'Marketing Automation' };
@@ -61,7 +63,7 @@ export class DashboardComponent implements OnInit {
         this.productNames = this.getUniqueByKey<Product>(arr, 'productId');
 
         this.setVendorDropdown();
-        this.selectedVendor = Object.assign({}, this.vendorDropdownDataSource[0]);
+        // this.selectedVendor = Object.assign({}, this.vendorDropdownDataSource[0]);
       });
 
   }
@@ -89,7 +91,7 @@ export class DashboardComponent implements OnInit {
         this.VendorStats = res;
         console.log('vendorstats', this.VendorStats);
 
-        this.selectedVendor = Object.assign({}, this.vendorDropdownDataSource[0]);
+        // this.selectedVendor = Object.assign({}, this.vendorDropdownDataSource[0]);
 
         this.buildPieChartData();
       })
@@ -153,7 +155,38 @@ export class DashboardComponent implements OnInit {
 
     let statusesByProductType: VendorPieDataModel[] = [{}];
     this.vendorGroupedData = this.groupBy(this.cardDetails, 'msgdate');
+    //console.log(this.vendorGroupedData);
 
+    let dataSource: PieDataSourceModel[] = [];
+    let msgDates = Object.keys(this.vendorGroupedData);
+    msgDates.forEach((msgDate: any) => {
+      let doubleGroupedByData = this.groupBy(this.vendorGroupedData[msgDate], 'vendorName');
+
+      let keys = Object.keys(doubleGroupedByData).sort();
+      
+      keys.forEach((key: any) => {
+        dataSource.push({
+          key: {vendor: key, date: msgDate},
+          data: doubleGroupedByData[key]
+        })
+      })
+    });
+
+    this.pieDataSource = Object.assign([], dataSource);
+    console.log(this.pieDataSource)
+
+
+
+    // this.cardDetails = this.cardDetails.filter(r => r.vendorName === this.selectedVendor?.vendorName);
+    // this.vendorGroupedData = this.groupBy(this.cardDetails, 'msgdate');
+    // // console.log(this.vendorGroupedData);
+
+    // let msgDates2 = Object.keys(this.vendorGroupedData);
+    // msgDates2.forEach((msgDate: any) => {
+    //   let doubleGroupedByData = this.groupBy(this.vendorGroupedData[msgDate], 'vendorName');
+    //   console.log(doubleGroupedByData)
+    // });
+    
     let keys = Object.keys(this.vendorGroupedData).sort();
     let obj: VendorPieDataModel[] = [];
 
@@ -193,6 +226,16 @@ export class DashboardComponent implements OnInit {
 
   }
 
+  customizeLabel(e: any) {
+    return `${e.argumentText}\n${e.valueText}`;
+  }
+
+  // change functionality accordingly
+  calculateTotal(pieChart: any) {
+    const totalValue = pieChart.getAllSeries()[0].getVisiblePoints().reduce((s: any, p: any) => s + p.originalValue, 0);
+    return totalValue; //this.pipe.transform(totalValue, '1.0-0');
+  }
+
   private getStatusCount(arr: any[], value: any) {
     return arr.filter((element) => (element.status === value)).length;
   }
@@ -205,5 +248,4 @@ export class DashboardComponent implements OnInit {
     //console.log(this.selectedVendor);
     this.buildPieChartData();
   }
-
 }

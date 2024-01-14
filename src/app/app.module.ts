@@ -8,13 +8,15 @@ import { StatusCountPipeTransform } from './StatusCount.pipe';
 import { StatusPipeTransform } from './Status.pipe';
 import { DxPieChartModule } from 'devextreme-angular';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { Dashboard2Component } from './dashboard2/dashboard2.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     StatusPipeTransform,
     StatusCountPipeTransform,
-    DashboardComponent
+    DashboardComponent,
+    Dashboard2Component
   ],
   imports: [
     BrowserModule,

@@ -7,7 +7,7 @@ export class ProductDetails {
 }
 
 //Product ID data not getting populated. It needs to be checked.
-export class vendorStats {
+export class VendorStats {
     vendorId: number | undefined;
     productType: string | undefined;
     productId: number | undefined;

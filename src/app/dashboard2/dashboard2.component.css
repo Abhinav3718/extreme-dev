@@ -1,0 +1,67 @@
+#left {
+    float: left;
+    width: 12%;
+    margin-left: -42px;
+}
+
+#right {
+    float: right;
+    width: 40%;
+    margin-left: -1px !important;
+    margin-right: 0px !important;
+    min-height: 273px !important;
+    overflow: hidden;
+    height: 99px;
+}
+
+#status {
+    float: right;
+    width: 100%;
+    margin-left: 20px !important;
+    margin-right: -133px !important;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: -76px;
+}
+
+::ng-deep .demo-container .dx-fieldset:first-child {
+    width: 500px;
+}
+
+
+
+::ng-deep #pie {
+    height: 440px;
+}
+
+
+
+::ng-deep #pie * {
+    margin: 0 auto;
+}
+
+
+
+::ng-deep .pies-container {
+    margin: auto;
+    width: 100%;
+}
+
+
+
+::ng-deep .pies-container>.pie {
+    width: 30%;
+    margin-top: 29px;
+    float: left;
+}
+
+
+
+::ng-deep .long-title h3 {
+    font-weight: 200;
+    font-size: 28px;
+    text-align: center;
+    margin-bottom: 20px;
+}
