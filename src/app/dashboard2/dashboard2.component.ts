@@ -153,68 +153,47 @@ export class Dashboard2Component {
     
     this.setCardDetails();
 
-    let statusesByProductType: VendorPieDataModel[] = [{}];
+    let statusesByProductType: any[] = [{}];
     this.vendorGroupedData = this.groupBy(this.cardDetails, 'msgdate');
     //console.log(this.vendorGroupedData);
 
     let dataSource: PieDataSourceModel[] = [];
     let msgDates = Object.keys(this.vendorGroupedData);
+
+    let obj: any[] = []
     msgDates.forEach((msgDate: any) => {
       let doubleGroupedByData = this.groupBy(this.vendorGroupedData[msgDate], 'vendorName');
 
       let keys = Object.keys(doubleGroupedByData).sort();
-      
-      keys.forEach((key: any) => {
-        dataSource.push({
-          key: {vendor: key, date: msgDate},
-          data: doubleGroupedByData[key]
-        })
-      })
-    });
 
-    this.pieDataSource = Object.assign([], dataSource);
-    console.log(this.pieDataSource)
-
-
-
-    // this.cardDetails = this.cardDetails.filter(r => r.vendorName === this.selectedVendor?.vendorName);
-    // this.vendorGroupedData = this.groupBy(this.cardDetails, 'msgdate');
-    // // console.log(this.vendorGroupedData);
-
-    // let msgDates2 = Object.keys(this.vendorGroupedData);
-    // msgDates2.forEach((msgDate: any) => {
-    //   let doubleGroupedByData = this.groupBy(this.vendorGroupedData[msgDate], 'vendorName');
-    //   console.log(doubleGroupedByData)
-    // });
-    
-    let keys = Object.keys(this.vendorGroupedData).sort();
-    let obj: VendorPieDataModel[] = [];
-
-    if(keys && keys.length > 0) {
-      keys.forEach((msgDate: any) => {
-        let current = this.vendorGroupedData[msgDate];
-
-        let statuses: any = [];
+      keys.forEach((vendor: any) => {
+        let current = doubleGroupedByData[vendor].filter((r: any) => r.msgdate === msgDate)
+        dataSource = [];
         this.statusTypes.forEach((status: string) => {
-          statuses.push({
-            name: status,
+          
+          dataSource.push({
+            vendor: vendor,
+            msgDate: msgDate,
+            data: status,
             total: this.getStatusCount(current, status)
           })
-        });
+        })
 
         obj.push({
           msgDate: msgDate,
-          statuses: statuses
+          data: dataSource,
+          vendor: vendor
         })
-        
-        statusesByProductType = obj;
-
       })
-    }
+      
+      statusesByProductType = obj;
 
-    this.statusesByProductType = statusesByProductType;
+    });
 
-    console.log(this.statusesByProductType)
+    // console.log(statusesByProductType)
+
+    this.pieDataSource = Object.assign([], statusesByProductType as PieDataSourceModel[]);
+    // console.log(this.pieDataSource);
 
   }
 

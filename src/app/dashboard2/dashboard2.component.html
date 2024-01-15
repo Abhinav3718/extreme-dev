@@ -38,12 +38,12 @@
 
 
 <div id="status">
-    <div class="pies-container" *ngFor="let pie of pieDataSource">
-        <div *ngFor="let pieSource of pie.data">
+    <div class="pies-container" *ngFor="let pie of pieDataSource; index as i">
+        <div>
             <dx-pie-chart class="pie" *ngIf="pie && pie.data" sizeGroup="piesGroup" [dataSource]="pie.data"
                 [animation]="false" resolveLabelOverlapping="shift" type="doughnut" centerTemplate="centerTemplate"
                 [innerRadius]="0.65">
-                <dxi-series argumentField="status" valueField="count">
+                <dxi-series argumentField="data" valueField="total">
                     <dxo-label [visible]="true" backgroundColor="none" [visible]="true" format="fixedPoint"
                         [customizeText]="customizeLabel">
                         <dxo-connector [visible]="true"></dxo-connector>
@@ -55,8 +55,8 @@
                 <svg *dxTemplate="let pieChart of 'centerTemplate'">
                     <circle cx="100" cy="100" [attr.r]="pieChart.getInnerRadius() - 6" fill="#eee"></circle>
                     <text text-anchor="middle" style="font-size: 18px" x="100" y="120" fill="#494949">
-                        <tspan x="100">{{ pieSource.vendorName }}</tspan>
-                        <tspan x="100">MsgDate: {{ pieSource.msgdate }}</tspan>
+                        <tspan x="100">{{ pie.vendor }}</tspan>
+                        <tspan x="100">MsgDate: {{ pie.msgDate }}</tspan>
                         <tspan x="100" dy="20px" style="font-weight: 600">{{
                             calculateTotal(pieChart)
                             }}</tspan>

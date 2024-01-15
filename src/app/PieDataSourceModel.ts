@@ -1,4 +1,7 @@
 export class PieDataSourceModel {
-    key?: {};
-    data?: any[];
+    key?: any | {};
+    data?: string;
+    total?: number;
+    vendor?: any;
+    msgDate?: any;
 }
