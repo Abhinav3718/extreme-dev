@@ -175,7 +175,7 @@ export class Dashboard2Component {
             vendor: vendor,
             msgDate: msgDate,
             data: status,
-            total: this.getStatusCount(current, status)
+            total: current.filter((r: any) => r.status == status)[0]?.count || 0  //this.getStatusCount(current, status)
           })
         })
 
