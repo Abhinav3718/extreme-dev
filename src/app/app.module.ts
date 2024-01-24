@@ -3,12 +3,14 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { DxDateBoxModule, DxListModule, DxSelectBoxModule, DxTileViewModule } from 'devextreme-angular';
+import { DxChartModule, DxDateBoxModule, DxListModule, DxPivotGridModule, DxSelectBoxModule, DxTileViewModule } from 'devextreme-angular';
 import { StatusCountPipeTransform } from './StatusCount.pipe';
 import { StatusPipeTransform } from './Status.pipe';
 import { DxPieChartModule } from 'devextreme-angular';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { Dashboard2Component } from './dashboard2/dashboard2.component';
+import { NewDashboardComponent } from './new-dashboard/new-dashboard.component';
+import { DatePipe, DecimalPipe } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -16,7 +18,9 @@ import { Dashboard2Component } from './dashboard2/dashboard2.component';
     StatusPipeTransform,
     StatusCountPipeTransform,
     DashboardComponent,
-    Dashboard2Component
+    Dashboard2Component,
+    NewDashboardComponent,
+    
   ],
   imports: [
     BrowserModule,
@@ -25,9 +29,13 @@ import { Dashboard2Component } from './dashboard2/dashboard2.component';
     DxTileViewModule,
     DxPieChartModule,
     DxSelectBoxModule,
-    DxDateBoxModule
+    DxDateBoxModule,
+    DxPivotGridModule,
+    DxChartModule 
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: [DatePipe,
+    DecimalPipe],
+  bootstrap: [AppComponent],
+  exports: []
 })
 export class AppModule { }

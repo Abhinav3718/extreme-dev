@@ -1,0 +1,90 @@
+<div class="container-fluid text-center">    
+    <!-- <div class="row content">
+     
+      <div class="col-sm-6 text-left" style="background: #ddddec;width: 50%;">
+       
+        <p>Sec 1</p>
+        <div>
+          <table style="width: 100%;">
+            <tr>
+              <th>Reconciled</th>
+              <th>Remediated</th>
+              <th>Errors</th>
+            </tr>
+            <tr>
+              <td>{{56000 }}</td>
+              <td>{{20000}}</td>
+              <td>{{450 }}</td>
+             
+            </tr>
+          </table>
+        </div>
+      </div>
+     
+      <div class="col-sm-6" style="background: #e2cdcd; ">    
+       <p>Sec 2</p>
+       <div class="list-group">
+        <a href="#" class="list-group-item list-group-item-action list-group-item-success">This is a success list group item</a>
+        <a href="#" class="list-group-item list-group-item-action list-group-item-danger">This is a danger list group item</a>
+        <a href="#" class="list-group-item list-group-item-action list-group-item-warning">This is a warning list group item</a>
+        <a href="#" class="list-group-item list-group-item-action list-group-item-info">This is a info list group item</a>
+       </div>
+      </div>
+     
+    </div> -->
+   
+      <div class="row content">
+     
+      <div class="col-sm-9 text-left" style="background: #c4f7e7;margin-left: 0px; width: 60%;">
+       
+         <p>Sec 3</p>
+         <div>
+           <div class="dx-field">  
+             <div class="dx-field-label">Start Date</div>  
+             <div class="dx-field-value">  
+                 <dx-date-box [(value)]="startDate" type="date" pickerType="calendar"
+                 (onValueChanged)="onDateChanged($event)">  
+                 </dx-date-box>
+             </div>  
+         </div>
+       
+         <div class="dx-field">  
+           <div class="dx-field-label">End Date</div>  
+           <div class="dx-field-value">  
+               <dx-date-box [(value)]="endDate" type="date" pickerType="calendar"
+               (onValueChanged)="onDateChanged($event)">  
+               </dx-date-box>
+           </div>  
+       </div>
+       
+       <dx-pivot-grid
+       id="pivotgrid"     [allowSortingBySummary]="true"     [allowFiltering]="true"
+       [showBorders]="true"     [allowSortingBySummary]="true"     [showColumnGrandTotals]="false"
+       [showRowGrandTotals]="false"     [showRowTotals]="false"     [showColumnTotals]="false"
+       [dataSource]="pivotGridDataSource"      >    
+       
+       <dxo-field-chooser [enabled]="true" [height]="400"></dxo-field-chooser>
+       <dxo-scrolling mode="virtual"></dxo-scrolling>
+       </dx-pivot-grid>
+         </div>
+      </div>
+      <div class="col-sm-3" style="background: #ddddec; float: right;   margin-right: -255px; width: 40%;">
+        <!-- <p>sec 4</p> -->
+  
+        <dx-chart id="sales-chart">
+          <dxo-common-series-settings type="bar"></dxo-common-series-settings>
+          <dxo-size [height]="200"></dxo-size>
+          <dxo-adaptive-layout [width]="200"></dxo-adaptive-layout>
+          <dxo-tooltip
+            [enabled]="true"
+            format="currency"
+            [customizeTooltip]="customizeTooltip"
+          ></dxo-tooltip>
+        </dx-chart>
+       
+      </div>  
+       
+      </div>
+     
+    </div> 
+  
